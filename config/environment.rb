@@ -7,7 +7,6 @@ require 'rainbow'
 require 'friendly_numbers'
 require 'sparkr'
 require 'tty-table'
-require 'table_print'
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlserver",

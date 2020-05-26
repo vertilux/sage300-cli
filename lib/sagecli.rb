@@ -14,18 +14,26 @@ def menu
   CLI::UI::Prompt.ask('What report you want to display?') do |handler|
     handler.option('sales')  { |selection| selection }
     handler.option('order_action')     { |selection| selection }
-    handler.option('cash_flow')   { |selection| selection }
+    handler.option('financial_statements')   { |selection| selection }
     handler.option('upcomming_containers') { |selection| selection }
     handler.option('items_ranking') { |selection| selection }
     handler.option('close') { |selection| selection }
   end
 end
 
+def statements
+  CLI::UI::Prompt.ask('Choose Financial Statement') do |handler|
+    handler.option('Balance Sheet')  { |selection| selection }
+    handler.option('Income Statement')     { |selection| selection }
+    handler.option('Cash FLow')   { |selection| selection }
+  end
+end
+
 def reports
+  CLI::UI::StdoutRouter.enable
   while " "
     case menu
     when "sales"
-      CLI::UI::StdoutRouter.enable
       CLI::UI::Frame.open('YTD Net Sales Current Year') do
         if ytd_net_sales_current_year > ytd_net_sales_last_year
           puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_net_sales_current_year}"
@@ -66,7 +74,6 @@ def reports
         end
       end
     when "order_action"
-      CLI::UI::StdoutRouter.enable
       CLI::UI::Frame.open('Work in Process') do
         loading_spiner
         wip = work_in_process_sparkline
@@ -106,6 +113,15 @@ def reports
         end
         table = table.render width: 80, resize: true, alignments: [:left, :right, :right, :right, :right]
         puts table
+      end
+    when "financial_statements"
+      case statements
+      when "Balance Sheet"
+        balance_sheet
+      when "Income Statement"
+        puts "Income Statement"
+      when "Cash Flow"
+        puts "Cash Flow"
       end
     when "close"
       goodbye = Artii::Base.new

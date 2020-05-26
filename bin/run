@@ -1,3 +1,4 @@
+#!/usr/bin/ruby env
 require_relative '../config/environment.rb'
 #
 run
