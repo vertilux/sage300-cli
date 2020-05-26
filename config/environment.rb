@@ -5,13 +5,16 @@ require 'cli/ui'
 require 'artii'
 require 'rainbow'
 require 'friendly_numbers'
+require 'sparkr'
+require 'tty-table'
+require 'table_print'
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlserver",
-  host: "10.255.4.20",
-  database: "ACCLTD",
-  username: "accpac",
-  password: "vtx128wi*885787amil"
+  host: ENV['DB_HOST'],
+  database: ENV['DB_NAME'],
+  username: ENV['DB_USER'],
+  password: ENV['DB_PASSWD']
 )
 
 ActiveRecord::Base.logger = nil

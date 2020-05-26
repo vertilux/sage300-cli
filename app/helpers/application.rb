@@ -20,3 +20,9 @@ end
 def year_to_date_last_year
   Time.now.strftime("#{last_year}%m%d")
 end
+
+def loading_spiner
+  spin_group = CLI::UI::SpinGroup.new
+  spin_group.add('Loading') { |spinner| sleep 2.0; spinner.update_title('Loaded') }
+  spin_group.wait
+end

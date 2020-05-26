@@ -17,35 +17,100 @@ def menu
     handler.option('cash_flow')   { |selection| selection }
     handler.option('upcomming_containers') { |selection| selection }
     handler.option('items_ranking') { |selection| selection }
+    handler.option('close') { |selection| selection }
   end
 end
 
 def reports
-  case menu
-  when "sales"
-    CLI::UI::StdoutRouter.enable
-    CLI::UI::Frame.open('YTD Net Sales Current Year') do
-      if ytd_net_sales_current_year > ytd_net_sales_last_year
-        puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_net_sales_current_year}"
-        puts CLI::UI.fmt "Diff Last Year {{green:#{FriendlyNumbers.number_to_currency ytd_sales_diff}}"
-      else
-        puts CLI::UI.fmt "{{x}} #{FriendlyNumbers.number_to_currency ytd_net_sales_current_year}"
-        puts CLI::UI.fmt "Diff Last Year {{red:#{FriendlyNumbers.number_to_currency ytd_sales_diff}}}"
+  while " "
+    case menu
+    when "sales"
+      CLI::UI::StdoutRouter.enable
+      CLI::UI::Frame.open('YTD Net Sales Current Year') do
+        if ytd_net_sales_current_year > ytd_net_sales_last_year
+          puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_net_sales_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{green:#{FriendlyNumbers.number_to_currency ytd_sales_diff}}"
+        else
+          puts CLI::UI.fmt "{{x}} #{FriendlyNumbers.number_to_currency ytd_net_sales_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{red:#{FriendlyNumbers.number_to_currency ytd_sales_diff}}}"
+        end
       end
-    end
 
-    CLI::UI::Frame.open('YTD Net Sales Current Month') do
-      puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_net_sales_month}"
-    end
+      CLI::UI::Frame.open('YTD Net Sales Current Month') do
+        if ytd_month_current_year > ytd_month_last_year
+          puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_month_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{green:#{FriendlyNumbers.number_to_currency ytd_month_diff}}"
+        else
+          puts CLI::UI.fmt "{{x}} #{FriendlyNumbers.number_to_currency ytd_month_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{red:#{FriendlyNumbers.number_to_currency ytd_month_diff}}}"
+        end
+      end
 
-    CLI::UI::Frame.open('YTD Margin') do
-      puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_margin}"
-    end
+      CLI::UI::Frame.open('YTD Margin') do
+        if ytd_margin_current_year > ytd_margin_last_year
+          puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency ytd_margin_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{green:#{FriendlyNumbers.number_to_currency ytd_margin_diff}}"
+        else
+          puts CLI::UI.fmt "{{x}} #{FriendlyNumbers.number_to_currency ytd_margin_current_year}"
+          puts CLI::UI.fmt "Diff Last Year {{red:#{FriendlyNumbers.number_to_currency ytd_margin_diff}}}"
+        end
+      end
 
-    CLI::UI::Frame.open('YTD Net Sales Last Year') do
-      puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency total_sales_last_year}"
+      CLI::UI::Frame.open('YTD Net Sales Last Year') do
+        if ytd_net_sales_current_year > total_sales_last_year
+          puts CLI::UI.fmt "{{v}} #{FriendlyNumbers.number_to_currency total_sales_last_year}"
+          puts CLI::UI.fmt "Diff Net Sales {{green:#{FriendlyNumbers.number_to_currency net_sales_diff}}"
+        else
+          puts CLI::UI.fmt "{{x}} #{FriendlyNumbers.number_to_currency total_sales_last_year}"
+          puts CLI::UI.fmt "Diff Net Sales {{red:#{FriendlyNumbers.number_to_currency net_sales_diff}}}"
+        end
+      end
+    when "order_action"
+      CLI::UI::StdoutRouter.enable
+      CLI::UI::Frame.open('Work in Process') do
+        loading_spiner
+        wip = work_in_process_sparkline
+        puts Sparkr.sparkline(wip)
+      end
+
+      CLI::UI::Frame.open('Backorders') do
+        loading_spiner
+        bo = backorders_sparkline
+        puts Sparkr.sparkline(bo)
+      end
+
+      CLI::UI::Frame.open('Fullfilables') do
+        loading_spiner
+        full = fullfilable_sparkline
+        puts Sparkr.sparkline(full)
+      end
+
+      CLI::UI::Frame.open('Open Orders') do
+        loading_spiner
+        oo = open_orders_sparkline
+        puts Sparkr.sparkline(oo)
+      end
+
+      CLI::UI::Frame.open('Open Action Summary') do
+        table = TTY::Table.new do |t|
+          t << ['Date', 'Work in Process', 'Backorders', 'Fullfilable', 'Open Orders']
+          order_action_table.each do |r|
+            t << [
+              r.date,
+              "#{FriendlyNumbers.number_to_currency r.wip}",
+              "#{FriendlyNumbers.number_to_currency r.backorder}",
+              "#{FriendlyNumbers.number_to_currency r.fullfilable}",
+              "#{FriendlyNumbers.number_to_currency r.open_orders}"
+            ]
+          end
+        end
+        table = table.render width: 80, resize: true, alignments: [:left, :right, :right, :right, :right]
+        puts table
+      end
+    when "close"
+      goodbye = Artii::Base.new
+      puts Rainbow(goodbye.asciify("Good bye")).yellow
+      break
     end
-  when "order_action"
-    puts "Order Action"
   end
 end
