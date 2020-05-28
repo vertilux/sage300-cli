@@ -2,12 +2,34 @@
 
 def run
   welcome
-  reports
+  if ENV['DB_HOST'].nil? || ENV['DB_NAME'].nil? || ENV['DB_USER'].nil? || ENV['DB_PASSWD'].nil?
+    variables
+  else
+    reports
+  end
 end
 
 def welcome
   welcome = Artii::Base.new
   puts Rainbow(welcome.asciify("Vertilux    CLI")).red
+end
+
+def variables
+  prompt = TTY::Prompt.new
+  @ip = prompt.ask('Server IP Address?')
+  @db = prompt.ask('Data Base name?')
+  @user = prompt.ask('Enter Username?')
+  @pwd = prompt.mask("Enter Password?")
+
+  ActiveRecord::Base.establish_connection(
+    adapter: "sqlserver",
+    host: @ip,
+    database: @db,
+    username: @user,
+    password: @pwd
+  )
+
+  reports
 end
 
 def menu

@@ -10,6 +10,7 @@ gem 'cli-ui'
 gem 'artii'
 gem 'friendly_numbers', '~> 0.6.0'
 gem 'sparkr'
+gem 'tty-prompt'
 gem 'tty-table'
 
 # SQL server

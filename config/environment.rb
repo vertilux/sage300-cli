@@ -6,6 +6,7 @@ require 'artii'
 require 'rainbow'
 require 'friendly_numbers'
 require 'sparkr'
+require "tty-prompt"
 require 'tty-table'
 
 ActiveRecord::Base.establish_connection(
