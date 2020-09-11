@@ -34,6 +34,7 @@ GEM
     pastel (0.7.4)
       equatable (~> 0.6)
       tty-color (~> 0.5)
+    rainbow (3.0.0)
     rake (12.3.3)
     require_all (3.0.0)
     rspec (3.9.0)
@@ -89,6 +90,7 @@ DEPENDENCIES
   artii
   cli-ui
   friendly_numbers (~> 0.6.0)
+  rainbow (~> 3.0)
   rake (~> 12.0)
   require_all
   rspec (~> 3.0)
